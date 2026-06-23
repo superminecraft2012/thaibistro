@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import AnimateIn from './AnimateIn'
 import GoldOrnament from './GoldOrnament'
 
 const quickLinks = [
