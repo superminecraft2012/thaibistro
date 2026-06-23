@@ -30,10 +30,11 @@ export default function Hero() {
           y: bgY,
         }}
       />
-      {/* Left-to-right scrim for headline legibility (the art is already dark on the left, dish on the right) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-tb-dark via-tb-dark/60 to-transparent" />
+      {/* Light left-to-right scrim for headline legibility - kept subtle so the gold
+          mandala on the left of the artwork stays visible (the art is already dark there) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-tb-dark/55 via-tb-dark/20 to-transparent" />
       {/* Extra dark wash on mobile to guarantee contrast on cropped portrait viewports */}
-      <div className="absolute inset-0 md:hidden bg-tb-dark/40" />
+      <div className="absolute inset-0 md:hidden bg-tb-dark/30" />
       {/* Bottom fade so next section blends in */}
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-tb-dark to-transparent" />
       {/* Top fade */}
