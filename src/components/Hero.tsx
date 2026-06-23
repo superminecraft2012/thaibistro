@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import heroBg from '../assets/hero.jpg'
+import heroMobile from '../assets/hero-mobile.jpg'
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const
 
@@ -21,9 +22,17 @@ export default function Hero() {
 
   return (
     <section ref={ref} id="home" className="relative min-h-screen flex items-center overflow-hidden bg-tb-dark">
-      {/* Full-bleed hero background photo with subtle parallax */}
+      {/* Full-bleed hero background with subtle parallax - portrait art on mobile, landscape at md+ */}
       <motion.div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center md:hidden"
+        style={{
+          backgroundImage: `url(${heroMobile})`,
+          filter: 'brightness(0.92) saturate(1.05)',
+          y: bgY,
+        }}
+      />
+      <motion.div
+        className="absolute inset-0 bg-cover bg-center hidden md:block"
         style={{
           backgroundImage: `url(${heroBg})`,
           filter: 'brightness(0.92) saturate(1.05)',
