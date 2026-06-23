@@ -78,7 +78,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.35, ease: EASE_OUT }}
               className="block text-[2.75rem] sm:text-6xl md:text-[4.5rem] font-bold text-tb-gold text-shadow"
             >
-              Bold Flavors.
+              Bold flavors,
             </motion.span>
             <motion.span
               initial={{ opacity: 0, x: -48, filter: 'blur(6px)' }}
@@ -86,7 +86,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.52, ease: EASE_OUT }}
               className="block text-[2.75rem] sm:text-6xl md:text-[4.5rem] font-bold text-white text-shadow"
             >
-              Timeless Tradition.
+              timeless tradition.
             </motion.span>
           </h1>
 
