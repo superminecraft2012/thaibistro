@@ -156,7 +156,7 @@ export default function Navbar() {
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden flex flex-col items-center justify-center text-white w-11 h-11 -mr-2"
+          className="md:hidden flex flex-col items-center justify-center text-tb-gold w-11 h-11 -mr-2"
           onClick={() => setMenuOpen(o => !o)}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
@@ -204,7 +204,7 @@ export default function Navbar() {
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
                     className={`flex items-center min-h-[44px] text-base font-medium tracking-wide uppercase transition-colors active:bg-white/5 rounded-md px-1 ${
-                      active === link.id ? 'text-tb-gold' : 'text-white/70 hover:text-white'
+                      active === link.id ? 'text-tb-gold' : 'text-tb-gold/70 hover:text-tb-gold'
                     }`}
                   >
                     {link.label}
