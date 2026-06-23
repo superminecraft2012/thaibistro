@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+import heroBg from '../assets/hero.jpg'
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const
 
@@ -20,23 +21,19 @@ export default function Hero() {
 
   return (
     <section ref={ref} id="home" className="relative min-h-screen flex items-center overflow-hidden bg-tb-dark">
-      {/* Diagonal texture at 5% */}
-      <div className="absolute inset-0 diag-texture pointer-events-none" style={{ opacity: 0.03 }} />
-
-      {/* Parallax food photo - full-width on mobile behind a strong scrim, right-half at md+ */}
+      {/* Full-bleed hero background photo with subtle parallax */}
       <motion.div
-        className="absolute inset-y-0 right-0 w-full md:w-1/2 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('https://static.spotapps.co/spots/b5/db83fd4a254d978ac5047d35b95d8e/full')`,
-          filter: 'brightness(0.6) saturate(1.3)',
+          backgroundImage: `url(${heroBg})`,
+          filter: 'brightness(0.92) saturate(1.05)',
           y: bgY,
         }}
       />
-      {/* Mobile scrim: strong full-bleed dark overlay for text legibility (hidden at md+) */}
-      <div className="absolute inset-0 md:hidden bg-gradient-to-r from-tb-dark via-tb-dark/85 to-tb-dark/65" />
-      <div className="absolute inset-0 md:hidden bg-tb-dark/35" />
-      {/* Smooth left-to-right gradient blending photo into dark bg (md+) */}
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-tb-dark via-tb-dark/75 to-transparent hidden md:block" />
+      {/* Left-to-right scrim for headline legibility (the art is already dark on the left, dish on the right) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-tb-dark via-tb-dark/60 to-transparent" />
+      {/* Extra dark wash on mobile to guarantee contrast on cropped portrait viewports */}
+      <div className="absolute inset-0 md:hidden bg-tb-dark/40" />
       {/* Bottom fade so next section blends in */}
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-tb-dark to-transparent" />
       {/* Top fade */}
@@ -71,7 +68,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.35, ease: EASE_OUT }}
               className="block text-[2.75rem] sm:text-6xl md:text-[4.5rem] font-bold text-tb-gold text-shadow"
             >
-              Authentic Thai.
+              Bold Flavors.
             </motion.span>
             <motion.span
               initial={{ opacity: 0, x: -48, filter: 'blur(6px)' }}
@@ -79,7 +76,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.52, ease: EASE_OUT }}
               className="block text-[2.75rem] sm:text-6xl md:text-[4.5rem] font-bold text-white text-shadow"
             >
-              Made with Heart.
+              Timeless Tradition.
             </motion.span>
           </h1>
 
@@ -89,7 +86,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.75, ease: EASE_OUT }}
             className="text-white/70 text-base md:text-lg max-w-md mb-8 sm:mb-10 leading-relaxed"
           >
-            A family-owned restaurant serving traditional Thai cuisine crafted with
+            A family-owned restaurant serving authentic Thai cuisine crafted with
             passion, premium ingredients, and timeless recipes.
           </motion.p>
 
