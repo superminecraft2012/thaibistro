@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0c0514;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fixed grain at 3% opacity — barely perceptible */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .text-shadow {
+    text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+  }
+
+  /*
+   * Texture classes — always applied via a wrapper <div style={{opacity:0.05}}>
+   * so the CSS here defines the shape at full strength, opacity is controlled externally.
+   */
+  /* Diamond outline grid — stroke only, no fill → much more subtle than filled shapes */
+  .thai-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 1 L31 16 L16 31 L1 16 Z' fill='none' stroke='%23d4a843' stroke-width='0.8'/%3E%3C/svg%3E");
+  }
+
+  /* Finer diagonal line grid — thinner lines, same stroke-only approach */
+  .diag-texture {
+    background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 1 L31 16 L16 31 L1 16 Z' fill='none' stroke='%23d4a843' stroke-width='0.8'/%3E%3C/svg%3E");
+  }
+
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d4a843 40%, #d4a843 60%, transparent);
+  }
+
+  /* Very faint top glow — applied as absolute overlay */
+  .section-glow {
+    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212,168,67,0.06) 0%, transparent 65%);
+  }
+
+  .section-glow-left {
+    background: radial-gradient(ellipse 60% 80% at -10% 50%, rgba(212,168,67,0.05) 0%, transparent 65%);
+  }
+}
