@@ -13,6 +13,31 @@ const photos = [
   { src: 'https://static.spotapps.co/spots/38/f41b6826904b15bb21b9d4a36d0e6a/full', alt: 'Booth area with dark wooden paneling' },
 ]
 
+// Ambient floating gold motes that drift through the section for constant subtle movement.
+const MOTES = Array.from({ length: 7 }, (_, i) => ({
+  id: i,
+  left: `${8 + (i * 13) % 84}%`,
+  top: `${12 + (i * 17) % 72}%`,
+  size: 2 + (i % 3),
+  duration: 7 + (i % 4) * 1.5,
+  delay: i * 0.6,
+}))
+
+// Each tile gets its own slow "Ken Burns" pan + zoom so the photos are always gently moving.
+function kenBurns(i: number) {
+  const panX = i % 2 === 0 ? ['0%', '-3.5%', '0%'] : ['0%', '3.5%', '0%']
+  const panY = i % 3 === 0 ? ['0%', '3%', '0%'] : ['0%', '-3%', '0%']
+  return {
+    animate: { scale: [1.04, 1.14, 1.04], x: panX, y: panY },
+    transition: {
+      duration: 13 + (i % 4) * 2,
+      delay: i * 0.4,
+      repeat: Infinity,
+      ease: 'easeInOut' as const,
+    },
+  }
+}
+
 export default function Gallery() {
   const reduceMotion = useReducedMotion()
   return (
@@ -22,6 +47,17 @@ export default function Gallery() {
       <div className="absolute inset-0 section-glow pointer-events-none" />
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-tb-dark to-transparent pointer-events-none" />
 
+      {/* Ambient drifting gold motes */}
+      {!reduceMotion && MOTES.map(m => (
+        <motion.div
+          key={m.id}
+          className="absolute rounded-full bg-tb-gold pointer-events-none"
+          style={{ left: m.left, top: m.top, width: m.size, height: m.size }}
+          animate={{ y: [-10, 10, -10], opacity: [0.1, 0.3, 0.1] }}
+          transition={{ duration: m.duration, delay: m.delay, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ))}
+
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <AnimateIn className="text-center mb-14">
           <p className="text-tb-gold text-sm font-medium tracking-[0.2em] uppercase mb-3">Gallery</p>
@@ -30,25 +66,41 @@ export default function Gallery() {
         </AnimateIn>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
-          {photos.map((photo, i) => (
-            <motion.div
-              key={i}
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.88, filter: 'blur(4px)' }}
-              whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: reduceMotion ? 0.3 : 0.6, delay: reduceMotion ? 0 : i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={reduceMotion ? undefined : { scale: 1.03, transition: { duration: 0.3 } }}
-              whileTap={reduceMotion ? undefined : { scale: 0.97 }}
-              className="group aspect-square overflow-hidden rounded-lg sm:rounded-xl border border-white/[0.07] hover:border-tb-gold/50 transition-colors duration-300 cursor-pointer"
-            >
-              <motion.img
-                src={photo.src}
-                alt={photo.alt}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-              />
-            </motion.div>
-          ))}
+          {photos.map((photo, i) => {
+            const kb = kenBurns(i)
+            return (
+              <motion.div
+                key={i}
+                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.88, filter: 'blur(4px)' }}
+                whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: reduceMotion ? 0.3 : 0.6, delay: reduceMotion ? 0 : i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={reduceMotion ? undefined : { scale: 1.04, zIndex: 10, transition: { duration: 0.3 } }}
+                whileTap={reduceMotion ? undefined : { scale: 0.97 }}
+                className="group relative aspect-square overflow-hidden rounded-lg sm:rounded-xl border border-white/[0.07] hover:border-tb-gold/50 transition-colors duration-300 cursor-pointer"
+              >
+                <motion.img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading="lazy"
+                  className="w-full h-full object-cover will-change-transform group-hover:brightness-110 transition-[filter] duration-300"
+                  animate={reduceMotion ? undefined : kb.animate}
+                  transition={reduceMotion ? undefined : kb.transition}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
+                {/* Gold sheen that sweeps across on hover */}
+                {!reduceMotion && (
+                  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                    <div className="absolute -inset-y-2 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-[450%] transition-all duration-700 ease-out" />
+                  </div>
+                )}
+                {/* Caption fades up on hover */}
+                <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-tb-dark/85 to-transparent opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
+                  <p className="text-white/85 text-[11px] sm:text-xs leading-snug">{photo.alt}</p>
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
 

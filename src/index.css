@@ -21,7 +21,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Fixed grain at 3% opacity — barely perceptible */
+/* Fixed grain at 3% opacity - barely perceptible */
 body::after {
   content: '';
   position: fixed;
@@ -47,15 +47,15 @@ body::after {
   }
 
   /*
-   * Texture classes — always applied via a wrapper <div style={{opacity:0.05}}>
+   * Texture classes - always applied via a wrapper <div style={{opacity:0.05}}>
    * so the CSS here defines the shape at full strength, opacity is controlled externally.
    */
-  /* Diamond outline grid — stroke only, no fill → much more subtle than filled shapes */
+  /* Diamond outline grid - stroke only, no fill → much more subtle than filled shapes */
   .thai-pattern {
     background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 1 L31 16 L16 31 L1 16 Z' fill='none' stroke='%23d4a843' stroke-width='0.8'/%3E%3C/svg%3E");
   }
 
-  /* Finer diagonal line grid — thinner lines, same stroke-only approach */
+  /* Finer diagonal line grid - thinner lines, same stroke-only approach */
   .diag-texture {
     background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 1 L31 16 L16 31 L1 16 Z' fill='none' stroke='%23d4a843' stroke-width='0.8'/%3E%3C/svg%3E");
   }
@@ -65,7 +65,7 @@ body::after {
     background: linear-gradient(90deg, transparent, #d4a843 40%, #d4a843 60%, transparent);
   }
 
-  /* Very faint top glow — applied as absolute overlay */
+  /* Very faint top glow - applied as absolute overlay */
   .section-glow {
     background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212,168,67,0.06) 0%, transparent 65%);
   }
@@ -89,7 +89,7 @@ body::after {
   }
 }
 
-/* Gentle attention pulse for the order button — gated on reduced motion below */
+/* Gentle attention pulse for the order button - gated on reduced motion below */
 @keyframes order-pulse {
   0%, 100% {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(212, 168, 67, 0.35);
@@ -126,7 +126,7 @@ body::after {
     animation: none !important;
   }
 
-  /* Drop the fixed grain overlay — a non-essential heavy effect */
+  /* Drop the fixed grain overlay - a non-essential heavy effect */
   body::after {
     display: none;
   }

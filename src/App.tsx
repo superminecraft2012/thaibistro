@@ -2,10 +2,8 @@ import { useScroll, useSpring, motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
-import SignatureDishes from './components/SignatureDishes'
 import Gallery from './components/Gallery'
 import OrderCTA from './components/OrderCTA'
-import Locations from './components/Locations'
 import Footer from './components/Footer'
 import OrderBar from './components/OrderBar'
 
@@ -23,10 +21,8 @@ export default function App() {
       <Navbar />
       <Hero />
       <About />
-      <SignatureDishes />
       <Gallery />
       <OrderCTA />
-      <Locations />
       <Footer />
       <OrderBar />
     </div>

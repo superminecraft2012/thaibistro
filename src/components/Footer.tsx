@@ -5,10 +5,10 @@ const quickLinks = [
   { label: 'Home', href: '#home' },
   { label: 'Menu', href: 'https://thaibistro.us/food-menu' },
   { label: 'Drinks', href: 'https://thaibistro.us/drink-menu' },
-  { label: 'Reserve', href: 'https://thaibistro.us/reservations' },
+  { label: 'Order Online', href: '#order' },
   { label: 'Parties', href: 'https://thaibistro.us/party' },
   { label: 'Catering', href: 'https://thaibistro.us/catering' },
-  { label: 'Locations', href: '#locations' },
+  { label: 'Locations', href: '#order' },
 ]
 
 const contacts = [

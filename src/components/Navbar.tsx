@@ -5,9 +5,8 @@ import { useActiveSection } from '../hooks/useActiveSection'
 const NAV_LINKS = [
   { label: 'Home', href: '#home', id: 'home' },
   { label: 'About', href: '#about', id: 'about' },
-  { label: 'Menu', href: '#menu', id: 'menu' },
   { label: 'Gallery', href: '#gallery', id: 'gallery' },
-  { label: 'Location', href: '#locations', id: 'locations' },
+  { label: 'Order', href: '#order', id: 'order' },
 ]
 
 function OrderBagIcon({ className }: { className: string }) {

@@ -23,7 +23,7 @@ export default function OrderBar() {
   const [scrolled, setScrolled] = useState(
     () => typeof window !== 'undefined' && window.scrollY > SHOW_AFTER
   )
-  // True while the #order section or the footer is on screen — we hide the bar then
+  // True while the #order section or the footer is on screen - we hide the bar then
   // so it never permanently covers those conversion/contact surfaces.
   const [atDestination, setAtDestination] = useState(false)
 

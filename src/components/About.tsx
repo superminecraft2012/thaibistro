@@ -20,7 +20,7 @@ export default function About() {
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-          {/* Photo — clip-path reveal */}
+          {/* Photo - clip-path reveal */}
           <motion.div
             initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -49,7 +49,7 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* Content — staggered text */}
+          {/* Content - staggered text */}
           <div className="flex flex-col gap-5 sm:gap-6">
             <AnimateIn direction="right" delay={0.05}>
               <p className="text-tb-gold text-xs sm:text-sm font-medium tracking-[0.25em] uppercase mb-2 sm:mb-3">Our Story</p>
@@ -73,7 +73,7 @@ export default function About() {
             <AnimateIn direction="right" delay={0.3}>
               <p className="text-white/65 leading-relaxed text-base md:text-lg">
                 From our family to yours, we invite you to experience the warmth, hospitality,
-                and unforgettable taste of Thailand — authentic gourmet Thai food with a
+                and unforgettable taste of Thailand, authentic gourmet Thai food with a
                 contemporary twist, carefully prepared using only the freshest ingredients.
               </p>
             </AnimateIn>

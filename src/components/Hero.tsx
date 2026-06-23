@@ -23,7 +23,7 @@ export default function Hero() {
       {/* Diagonal texture at 5% */}
       <div className="absolute inset-0 diag-texture pointer-events-none" style={{ opacity: 0.03 }} />
 
-      {/* Parallax food photo — full-width on mobile behind a strong scrim, right-half at md+ */}
+      {/* Parallax food photo - full-width on mobile behind a strong scrim, right-half at md+ */}
       <motion.div
         className="absolute inset-y-0 right-0 w-full md:w-1/2 bg-cover bg-center"
         style={{
@@ -42,7 +42,7 @@ export default function Hero() {
       {/* Top fade */}
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-tb-dark/60 to-transparent" />
 
-      {/* Floating gold particles — disabled when reduced motion is preferred */}
+      {/* Floating gold particles - disabled when reduced motion is preferred */}
       {!reduceMotion && PARTICLES.map(p => (
         <motion.div
           key={p.id}
@@ -106,7 +106,7 @@ export default function Hero() {
               transition={{ duration: 0.7, delay: 1.0, ease: EASE_OUT }}
               className="group relative inline-flex items-center justify-center gap-2.5 bg-tb-red hover:bg-tb-red-hover text-white font-bold w-full sm:w-auto min-h-[52px] px-9 py-4 rounded shadow-lg shadow-tb-red/30 transition-colors hover:scale-105 active:scale-95 text-base tracking-wide uppercase overflow-hidden"
             >
-              {/* Pulsing focus ring (looping) — only when motion is allowed */}
+              {/* Pulsing focus ring (looping) - only when motion is allowed */}
               {!reduceMotion && (
                 <span className="absolute inset-0 rounded ring-2 ring-tb-red/40 animate-ping opacity-60 pointer-events-none" aria-hidden="true" />
               )}
@@ -128,13 +128,9 @@ export default function Hero() {
               </svg>
               <span className="relative">Order Online</span>
             </motion.a>
-            <a href="#menu"
+            <a href="https://thaibistro.us/food-menu" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 border border-tb-gold/60 hover:border-tb-gold text-tb-gold hover:bg-tb-gold/10 font-semibold w-full sm:w-auto min-h-[48px] px-7 py-3.5 rounded transition-all hover:scale-105 active:scale-95 text-sm tracking-wide uppercase">
               View Our Menu
-            </a>
-            <a href="https://thaibistro.us/reservations" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 border border-white/25 hover:border-white/50 text-white/80 hover:text-white hover:bg-white/5 font-semibold w-full sm:w-auto min-h-[48px] px-7 py-3.5 rounded transition-all hover:scale-105 active:scale-95 text-sm tracking-wide uppercase">
-              Reserve a Table
             </a>
           </motion.div>
 
