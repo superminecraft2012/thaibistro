@@ -4,8 +4,10 @@ import Hero from './components/Hero'
 import About from './components/About'
 import SignatureDishes from './components/SignatureDishes'
 import Gallery from './components/Gallery'
+import OrderCTA from './components/OrderCTA'
 import Locations from './components/Locations'
 import Footer from './components/Footer'
+import OrderBar from './components/OrderBar'
 
 export default function App() {
   const { scrollYProgress } = useScroll()
@@ -23,8 +25,10 @@ export default function App() {
       <About />
       <SignatureDishes />
       <Gallery />
+      <OrderCTA />
       <Locations />
       <Footer />
+      <OrderBar />
     </div>
   )
 }

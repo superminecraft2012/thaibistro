@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import AnimateIn from './AnimateIn'
 import GoldOrnament from './GoldOrnament'
 
@@ -14,6 +14,7 @@ const photos = [
 ]
 
 export default function Gallery() {
+  const reduceMotion = useReducedMotion()
   return (
     <section id="gallery" className="relative bg-tb-dark py-24 md:py-32 overflow-hidden">
       {/* Thai pattern at 5% */}
@@ -28,21 +29,22 @@ export default function Gallery() {
           <GoldOrnament className="max-w-xs mx-auto" />
         </AnimateIn>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
           {photos.map((photo, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, scale: 0.88, filter: 'blur(4px)' }}
-              whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.88, filter: 'blur(4px)' }}
+              whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, filter: 'blur(0px)' }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.6, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
-              className="group aspect-square overflow-hidden rounded-lg border border-white/[0.07] hover:border-tb-gold/50 transition-colors duration-300 cursor-pointer"
+              transition={{ duration: reduceMotion ? 0.3 : 0.6, delay: reduceMotion ? 0 : i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={reduceMotion ? undefined : { scale: 1.03, transition: { duration: 0.3 } }}
+              whileTap={reduceMotion ? undefined : { scale: 0.97 }}
+              className="group aspect-square overflow-hidden rounded-lg sm:rounded-xl border border-white/[0.07] hover:border-tb-gold/50 transition-colors duration-300 cursor-pointer"
             >
               <motion.img
                 src={photo.src}
                 alt={photo.alt}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
               />
             </motion.div>

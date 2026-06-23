@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import AnimateIn from './AnimateIn'
 import GoldOrnament from './GoldOrnament'
 
@@ -34,6 +34,7 @@ const dishes = [
 ]
 
 export default function SignatureDishes() {
+  const reduceMotion = useReducedMotion()
   return (
     <section id="menu" className="relative bg-tb-dark py-24 md:py-32 overflow-hidden">
       {/* Diagonal texture at 5% */}
@@ -48,15 +49,16 @@ export default function SignatureDishes() {
           <GoldOrnament className="max-w-xs mx-auto" />
         </AnimateIn>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7 sm:gap-6">
           {dishes.map((dish, i) => (
             <motion.div
               key={dish.name}
-              initial={{ opacity: 0, y: 48 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 48 }}
+              whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.65, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -8, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
+              transition={{ duration: reduceMotion ? 0.3 : 0.65, delay: reduceMotion ? 0 : i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={reduceMotion ? undefined : { y: -8, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
+              whileTap={reduceMotion ? undefined : { scale: 0.97 }}
               className="group bg-white/[0.03] border border-white/[0.07] rounded-lg overflow-hidden hover:border-tb-gold/40 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-black/40 transition-colors duration-300"
             >
               <div className="aspect-square overflow-hidden">
@@ -64,7 +66,7 @@ export default function SignatureDishes() {
                   src={dish.img}
                   alt={dish.alt}
                   className="w-full h-full object-cover"
-                  whileHover={{ scale: 1.08 }}
+                  whileHover={reduceMotion ? undefined : { scale: 1.08 }}
                   transition={{ duration: 0.5 }}
                   onError={(e) => { (e.target as HTMLImageElement).src = '/images/food-menu-banner.png' }}
                 />
@@ -75,12 +77,26 @@ export default function SignatureDishes() {
                   <span className="text-tb-gold font-semibold text-sm shrink-0 mt-0.5">{dish.price}</span>
                 </div>
                 <p className="text-white/50 text-sm leading-relaxed">{dish.description}</p>
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                  <span className="text-tb-gold/70 text-xs font-medium tracking-wide uppercase">{dish.price}</span>
+                  <motion.a
+                    href="#order"
+                    aria-label={`Order ${dish.name}`}
+                    whileTap={reduceMotion ? undefined : { scale: 0.94 }}
+                    className="inline-flex items-center gap-1.5 bg-tb-red hover:bg-tb-red-hover text-white text-xs font-semibold tracking-wide rounded-full px-4 py-2 opacity-95 group-hover:opacity-100 group-hover:scale-105 shadow-sm transition-all active:scale-95"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    Order
+                  </motion.a>
+                </div>
                 <motion.div
                   className="h-px mt-4 bg-gradient-to-r from-tb-gold/0 via-tb-gold/50 to-tb-gold/0"
-                  initial={{ scaleX: 0 }}
+                  initial={reduceMotion ? { scaleX: 1 } : { scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.2 + i * 0.1 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.8, delay: reduceMotion ? 0 : 0.2 + i * 0.1 }}
                 />
               </div>
             </motion.div>
@@ -88,13 +104,25 @@ export default function SignatureDishes() {
         </div>
 
         <AnimateIn className="text-center mt-12" delay={0.3}>
-          <a href="https://thaibistro.us/food-menu" target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-tb-gold/50 hover:border-tb-gold text-tb-gold hover:bg-tb-gold/10 font-semibold px-8 py-3.5 rounded transition-all hover:scale-105 active:scale-95 text-sm tracking-wide">
-            Explore Full Menu
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4">
+            <motion.a href="#order"
+              whileTap={reduceMotion ? undefined : { scale: 0.96 }}
+              className="inline-flex items-center justify-center gap-2 bg-tb-red hover:bg-tb-red-hover text-white font-semibold px-8 py-3.5 rounded shadow-lg shadow-tb-red/20 transition-all hover:scale-105 active:scale-95 text-sm tracking-wide">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              Order Online
+            </motion.a>
+            <motion.a href="https://thaibistro.us/food-menu" target="_blank" rel="noopener noreferrer"
+              whileTap={reduceMotion ? undefined : { scale: 0.96 }}
+              className="inline-flex items-center justify-center gap-2 border border-tb-gold/50 hover:border-tb-gold text-tb-gold hover:bg-tb-gold/10 font-semibold px-8 py-3.5 rounded transition-all hover:scale-105 active:scale-95 text-sm tracking-wide">
+              Explore Full Menu
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </motion.a>
+          </div>
+          <p className="text-white/40 text-xs tracking-wide mt-5">Available for pickup &amp; delivery</p>
         </AnimateIn>
       </div>
 

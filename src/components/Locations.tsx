@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import AnimateIn from './AnimateIn'
 import GoldOrnament from './GoldOrnament'
 
@@ -69,8 +69,16 @@ function ClockIcon() {
     </svg>
   )
 }
+function BagIcon() {
+  return (
+    <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
+    </svg>
+  )
+}
 
 export default function Locations() {
+  const reduceMotion = useReducedMotion()
   return (
     <section id="locations" className="relative bg-tb-dark py-24 md:py-32 overflow-hidden">
       {/* Diagonal texture at 5% */}
@@ -84,19 +92,19 @@ export default function Locations() {
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <AnimateIn className="text-center mb-14">
           <p className="text-tb-gold text-sm font-medium tracking-[0.2em] uppercase mb-3">Visit Us</p>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-5">Three Convenient Locations</h2>
+          <h2 className="font-display text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-5">Three Convenient Locations</h2>
           <GoldOrnament className="max-w-xs mx-auto" />
         </AnimateIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7">
           {locations.map((loc, i) => (
             <motion.div
               key={loc.name}
-              initial={{ opacity: 0, y: 48 }}
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 48 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.65, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -6, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }}
+              transition={{ duration: 0.65, delay: reduceMotion ? 0 : i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }}
               className="group bg-white/[0.03] border border-white/[0.07] rounded-lg overflow-hidden hover:border-tb-gold/40 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-black/40 transition-colors duration-300"
             >
               {/* Card image */}
@@ -117,54 +125,63 @@ export default function Locations() {
               </div>
 
               {/* Card body */}
-              <div className="p-5 space-y-4">
-                <a href={loc.mapsUrl} target="_blank" rel="noopener noreferrer"
-                  className="flex items-start gap-2.5 text-white/70 hover:text-tb-gold transition-colors">
+              <div className="p-5 space-y-3 sm:space-y-4">
+                <motion.a href={loc.mapsUrl} target="_blank" rel="noopener noreferrer"
+                  whileTap={{ scale: 0.98 }}
+                  className="flex items-start gap-2.5 -mx-2 px-2 py-1.5 rounded-md text-white/70 hover:text-tb-gold hover:bg-white/[0.03] transition-colors">
                   <MapPinIcon />
                   <div className="text-sm leading-relaxed">
                     <div>{loc.address}</div>
                     <div>{loc.city}</div>
                   </div>
-                </a>
-                <a href={`tel:${loc.tel}`} className="flex items-center gap-2.5 text-white/70 hover:text-tb-gold transition-colors">
+                </motion.a>
+                <motion.a href={`tel:${loc.tel}`}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex items-center gap-2.5 -mx-2 px-2 py-2 rounded-md text-white/70 hover:text-tb-gold hover:bg-white/[0.03] transition-colors">
                   <PhoneIcon />
                   <span className="text-sm">{loc.phone}</span>
-                </a>
-                <div className="flex items-start gap-2.5 text-white/70">
+                </motion.a>
+                <div className="flex items-start gap-2.5 text-white/70 px-0">
                   <ClockIcon />
-                  <div className="text-sm space-y-1">
+                  <div className="text-sm space-y-1 min-w-0 flex-1">
                     {loc.hours.map(h => (
-                      <div key={h.days} className="flex gap-2">
+                      <div key={h.days} className="flex gap-2 flex-wrap">
                         <span className="text-white/40 w-20 shrink-0">{h.days}</span>
-                        <span>{h.time}</span>
+                        <span className="whitespace-nowrap">{h.time}</span>
                       </div>
                     ))}
                   </div>
                 </div>
                 <motion.div
                   className="h-px bg-gradient-to-r from-tb-gold/0 via-tb-gold/40 to-tb-gold/0"
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
+                  initial={reduceMotion ? { opacity: 0 } : { scaleX: 0 }}
+                  whileInView={reduceMotion ? { opacity: 1 } : { scaleX: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.9, delay: 0.3 + i * 0.12 }}
+                  transition={{ duration: 0.9, delay: reduceMotion ? 0 : 0.3 + i * 0.12 }}
                 />
-                <a href={loc.orderUrl} target="_blank" rel="noopener noreferrer"
-                  className="block w-full text-center bg-tb-red hover:bg-tb-red-hover text-white text-sm font-semibold py-2.5 rounded transition-all hover:scale-[1.02] active:scale-[0.98]">
-                  Order Now
-                </a>
+                <div className="space-y-2">
+                  <motion.a href={loc.orderUrl} target="_blank" rel="noopener noreferrer"
+                    whileTap={{ scale: 0.97 }}
+                    className="flex w-full items-center justify-center gap-2.5 bg-tb-red hover:bg-tb-red-hover text-white text-base font-bold py-3.5 min-h-[52px] rounded-lg shadow-lg shadow-tb-red/20 transition-all hover:scale-[1.02]">
+                    <BagIcon />
+                    Order Online
+                  </motion.a>
+                  <p className="text-center text-xs text-white/45 tracking-wide">Pickup &amp; delivery available</p>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
 
         <AnimateIn className="text-center mt-10" delay={0.3}>
-          <a href="https://thaibistro.us/locations" target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-tb-gold/80 hover:text-tb-gold text-sm font-medium transition-colors tracking-wide group">
+          <motion.a href="https://thaibistro.us/locations" target="_blank" rel="noopener noreferrer"
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center justify-center gap-2 px-4 py-3 min-h-[48px] text-tb-gold/80 hover:text-tb-gold text-sm font-medium transition-colors tracking-wide group">
             View All Locations on Map
-            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-          </a>
+          </motion.a>
         </AnimateIn>
       </div>
 

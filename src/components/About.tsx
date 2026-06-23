@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import AnimateIn from './AnimateIn'
 import GoldOrnament from './GoldOrnament'
 
 export default function About() {
+  const reduceMotion = useReducedMotion()
   return (
     <section id="about" className="relative bg-tb-dark py-24 md:py-32 overflow-hidden">
       {/* Thai diamond pattern at 5% */}
@@ -21,16 +22,17 @@ export default function About() {
 
           {/* Photo — clip-path reveal */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="relative">
+            {/* Padding reserves room for the offset border so it never causes horizontal overflow on mobile */}
+            <div className="relative pr-4 pb-4 md:pr-0 md:pb-0">
               <motion.div
                 className="relative rounded-lg overflow-hidden aspect-[4/3] shadow-2xl shadow-black/60"
-                initial={{ clipPath: 'inset(0 100% 0 0)' }}
-                whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
+                initial={reduceMotion ? { opacity: 0 } : { clipPath: 'inset(0 100% 0 0)' }}
+                whileInView={reduceMotion ? { opacity: 1 } : { clipPath: 'inset(0 0% 0 0)' }}
                 viewport={{ once: true, margin: '-80px' }}
                 transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               >
@@ -41,17 +43,17 @@ export default function About() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-tb-dark/40 to-transparent" />
               </motion.div>
-              <div className="absolute -bottom-4 -right-4 w-full h-full border border-tb-gold/15 rounded-lg pointer-events-none" />
-              <div className="absolute -top-2 -left-2 w-4 h-4 rounded-full border-2 border-tb-gold/30 bg-tb-dark" />
-              <div className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full border-2 border-tb-gold/30 bg-tb-dark" />
+              <div className="absolute bottom-0 right-0 w-[calc(100%-1rem)] h-[calc(100%-1rem)] border border-tb-gold/15 rounded-lg pointer-events-none" />
+              <div className="absolute top-2 left-2 md:-top-2 md:-left-2 w-4 h-4 rounded-full border-2 border-tb-gold/30 bg-tb-dark" />
+              <div className="absolute bottom-2 right-2 md:-bottom-2 md:-right-2 w-4 h-4 rounded-full border-2 border-tb-gold/30 bg-tb-dark" />
             </div>
           </motion.div>
 
           {/* Content — staggered text */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5 sm:gap-6">
             <AnimateIn direction="right" delay={0.05}>
-              <p className="text-tb-gold text-sm font-medium tracking-[0.25em] uppercase mb-3">Our Story</p>
-              <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+              <p className="text-tb-gold text-xs sm:text-sm font-medium tracking-[0.25em] uppercase mb-2 sm:mb-3">Our Story</p>
+              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 A Tradition of<br />Flavors and Family
               </h2>
             </AnimateIn>
@@ -77,18 +79,19 @@ export default function About() {
             </AnimateIn>
 
             <AnimateIn direction="right" delay={0.38}>
-              <a href="https://thaibistro.us" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 border border-white/25 hover:border-tb-gold/60 text-white hover:text-tb-gold hover:bg-tb-gold/5 font-medium px-6 py-3 rounded transition-all text-sm tracking-wide">
+              <motion.a href="https://thaibistro.us" target="_blank" rel="noopener noreferrer"
+                whileTap={{ scale: 0.97 }}
+                className="group/link inline-flex items-center justify-center gap-2 border border-white/25 hover:border-tb-gold/60 text-white hover:text-tb-gold hover:bg-tb-gold/5 font-medium px-6 py-3.5 min-h-[48px] rounded transition-all text-sm tracking-wide">
                 Learn More About Us
                 <motion.svg
                   className="w-4 h-4"
                   fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                  whileHover={{ x: 4 }}
+                  whileHover={reduceMotion ? undefined : { x: 4 }}
                   transition={{ type: 'spring', stiffness: 400 }}
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </motion.svg>
-              </a>
+              </motion.a>
             </AnimateIn>
           </div>
         </div>
