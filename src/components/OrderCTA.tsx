@@ -2,6 +2,16 @@ import { motion, useReducedMotion } from 'framer-motion'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
+// A machine-readable weekly schedule used to compute today's open/closed status.
+// `days` uses JS getDay() numbering: 0 = Sun ... 6 = Sat. `open`/`close` are minutes
+// from midnight (local time). It runs parallel to the human-readable `hours` rows,
+// so index i in `schedule` matches index i in `hours` for "today" highlighting.
+interface DayRange {
+  days: number[]
+  open: number
+  close: number
+}
+
 interface OrderLocation {
   name: string
   address: string
@@ -9,9 +19,22 @@ interface OrderLocation {
   phone: string
   tel: string
   hours: { days: string; time: string }[]
+  schedule: DayRange[]
   orderUrl: string
   mapsUrl: string
 }
+
+const STD: DayRange[] = [
+  { days: [1, 2, 3, 4], open: 11 * 60, close: 21 * 60 },
+  { days: [5, 6], open: 11 * 60, close: 22 * 60 },
+  { days: [0], open: 12 * 60, close: 21 * 60 },
+]
+
+const MILL_CREEK: DayRange[] = [
+  { days: [1, 2, 3, 4], open: 11 * 60, close: 21 * 60 },
+  { days: [5, 6], open: 11 * 60, close: 21 * 60 },
+  { days: [0], open: 12 * 60, close: 21 * 60 },
+]
 
 const locations: OrderLocation[] = [
   {
@@ -25,6 +48,7 @@ const locations: OrderLocation[] = [
       { days: 'Fri – Sat', time: '11:00 AM – 10:00 PM' },
       { days: 'Sunday', time: '12:00 PM – 9:00 PM' },
     ],
+    schedule: STD,
     orderUrl: 'https://thaibistro-shoreline.orderfood.express/',
     mapsUrl: 'https://maps.app.goo.gl/BV74aiAYR69br5i99',
   },
@@ -39,6 +63,7 @@ const locations: OrderLocation[] = [
       { days: 'Fri – Sat', time: '11:00 AM – 10:00 PM' },
       { days: 'Sunday', time: '12:00 PM – 9:00 PM' },
     ],
+    schedule: STD,
     orderUrl: 'https://thaibistro-federalway.orderfood.express/',
     mapsUrl: 'https://maps.app.goo.gl/zKy7ym9tdmHpSenx6',
   },
@@ -53,10 +78,60 @@ const locations: OrderLocation[] = [
       { days: 'Fri – Sat', time: '11:00 AM – 9:00 PM' },
       { days: 'Sunday', time: '12:00 PM – 9:00 PM' },
     ],
+    schedule: MILL_CREEK,
     orderUrl: 'https://thaibistromillcreek.com/',
     mapsUrl: 'https://maps.app.goo.gl/QCZzbXnWvHYLJikw7',
   },
 ]
+
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+function fmtTime(mins: number) {
+  const h24 = Math.floor(mins / 60)
+  const mm = mins % 60
+  const ampm = h24 >= 12 ? 'PM' : 'AM'
+  const h12 = ((h24 + 11) % 12) + 1
+  return mm === 0 ? `${h12} ${ampm}` : `${h12}:${mm.toString().padStart(2, '0')} ${ampm}`
+}
+
+type OpenState = 'open' | 'soon' | 'closed'
+
+interface TodayStatus {
+  state: OpenState
+  label: string
+  detail: string
+  todayIndex: number
+}
+
+// Resolve the current open/closed status from a weekly schedule using the
+// visitor's local clock. Returns a `todayIndex` so the matching hours row can
+// be highlighted, plus a short human label + detail for the status pill.
+function getTodayStatus(schedule: DayRange[], now: Date): TodayStatus {
+  const day = now.getDay()
+  const mins = now.getHours() * 60 + now.getMinutes()
+  const todayIndex = schedule.findIndex(r => r.days.includes(day))
+  const today = todayIndex >= 0 ? schedule[todayIndex] : undefined
+
+  if (today && mins >= today.open && mins < today.close) {
+    return { state: 'open', label: 'Open now', detail: `until ${fmtTime(today.close)}`, todayIndex }
+  }
+  if (today && mins < today.open) {
+    // Opens later today. Call it "soon" within 60 minutes so the dot reads amber.
+    const state: OpenState = today.open - mins <= 60 ? 'soon' : 'closed'
+    return { state, label: state === 'soon' ? 'Opens soon' : 'Closed', detail: `opens ${fmtTime(today.open)}`, todayIndex }
+  }
+
+  // Closed for the rest of today — find the next day that has hours.
+  for (let i = 1; i <= 7; i++) {
+    const d = (day + i) % 7
+    const r = schedule.find(x => x.days.includes(d))
+    if (r) {
+      const when = i === 1 ? 'tomorrow' : DAY_NAMES[d]
+      return { state: 'closed', label: 'Closed', detail: `opens ${when} ${fmtTime(r.open)}`, todayIndex }
+    }
+  }
+  return { state: 'closed', label: 'Closed', detail: '', todayIndex }
+}
 
 function BagIcon({ className = 'w-5 h-5 shrink-0' }: { className?: string }) {
   return (
@@ -103,8 +178,146 @@ function TruckIcon() {
   )
 }
 
+function ArrowIcon({ className = 'w-5 h-5 shrink-0' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+    </svg>
+  )
+}
+
+// Colours for the live status pill, keyed by open state.
+const STATUS_STYLES: Record<OpenState, { dot: string; text: string; ring: string }> = {
+  open: { dot: 'bg-emerald-400', text: 'text-emerald-300', ring: 'ring-emerald-400/25' },
+  soon: { dot: 'bg-amber-400', text: 'text-amber-300', ring: 'ring-amber-400/25' },
+  closed: { dot: 'bg-white/40', text: 'text-white/55', ring: 'ring-white/10' },
+}
+
+function LocationCard({
+  loc,
+  index,
+  now,
+  reduceMotion,
+}: {
+  loc: OrderLocation
+  index: number
+  now: Date
+  reduceMotion: boolean | null
+}) {
+  const status = getTodayStatus(loc.schedule, now)
+  const s = STATUS_STYLES[status.state]
+
+  return (
+    <motion.div
+      initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 48 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.65, delay: reduceMotion ? 0 : 0.15 + index * 0.12, ease: EASE }}
+      whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.25, ease: EASE } }}
+      className="group flex flex-col bg-white/[0.03] border border-white/[0.07] rounded-xl overflow-hidden hover:border-tb-gold/40 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-black/40 transition-colors duration-300"
+    >
+      {/* Card image with location name + live status badge */}
+      <div className="relative overflow-hidden h-40 sm:h-44">
+        <img
+          src="https://static.spotapps.co/spots/7a/49cf33c8584852a63619508cf26a06/full"
+          alt={`Thai Bistro ${loc.name} storefront`}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-tb-dark/95 via-tb-dark/30 to-transparent" />
+
+        {/* Live open/closed badge - top-right, so each card reads differently at a glance */}
+        <div className={`absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-tb-dark/70 backdrop-blur-sm pl-2.5 pr-3 py-1 ring-1 ${s.ring}`}>
+          <span className="relative flex h-2 w-2">
+            {status.state === 'open' && !reduceMotion && (
+              <span className={`absolute inline-flex h-full w-full rounded-full ${s.dot} opacity-60 animate-ping`} />
+            )}
+            <span className={`relative inline-flex h-2 w-2 rounded-full ${s.dot}`} />
+          </span>
+          <span className={`text-xs font-semibold ${s.text}`}>{status.label}</span>
+        </div>
+
+        <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
+          <div>
+            <p className="text-tb-gold/90 text-[0.7rem] font-medium tracking-[0.18em] uppercase">Thai Bistro</p>
+            <p className="text-white font-bold text-2xl font-display leading-tight">{loc.name}</p>
+          </div>
+          <img src="/images/logo-square.png" alt="Thai Bistro logo" className="h-10 w-auto object-contain rounded" />
+        </div>
+      </div>
+
+      {/* Card body - the order action leads, details support */}
+      <div className="flex flex-col flex-1 p-5">
+        {/* Status detail line (e.g. "until 9 PM" / "opens 11 AM") */}
+        <p className="flex items-center gap-1.5 text-sm mb-3">
+          <span className={`font-semibold ${s.text}`}>{status.label}</span>
+          {status.detail && <span className="text-white/45">· {status.detail}</span>}
+        </p>
+
+        {/* PRIMARY ACTION - placed high in the card so the eye lands on it first */}
+        <motion.a
+          href={loc.orderUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Order online from Thai Bistro ${loc.name}`}
+          whileTap={{ scale: 0.97 }}
+          className="group/btn flex w-full items-center justify-center gap-2.5 bg-tb-red hover:bg-tb-red-hover text-white text-base font-bold py-4 min-h-[56px] rounded-xl shadow-lg shadow-tb-red/25 transition-all hover:scale-[1.02]"
+        >
+          <BagIcon />
+          Order Now
+          <ArrowIcon className="w-4 h-4 shrink-0 transition-transform group-hover/btn:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover/btn:translate-x-0" />
+        </motion.a>
+        <p className="text-center text-xs text-white/45 tracking-wide mt-2 mb-4">Pickup &amp; delivery available</p>
+
+        <div className="h-px bg-gradient-to-r from-tb-gold/0 via-tb-gold/30 to-tb-gold/0 mb-4" />
+
+        {/* Supporting details - quieter than the action above */}
+        <div className="space-y-1 mt-auto">
+          <motion.a
+            href={loc.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileTap={{ scale: 0.98 }}
+            className="flex items-start gap-2.5 -mx-2 px-2 py-1.5 rounded-md text-white/65 hover:text-tb-gold hover:bg-white/[0.03] transition-colors"
+          >
+            <MapPinIcon />
+            <span className="text-sm leading-snug">{loc.address}, {loc.city}</span>
+          </motion.a>
+          <motion.a
+            href={`tel:${loc.tel}`}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-2.5 -mx-2 px-2 py-1.5 rounded-md text-white/65 hover:text-tb-gold hover:bg-white/[0.03] transition-colors"
+          >
+            <PhoneIcon />
+            <span className="text-sm">{loc.phone}</span>
+          </motion.a>
+          <div className="flex items-start gap-2.5 -mx-2 px-2 py-1.5 text-white/65">
+            <ClockIcon />
+            <div className="text-sm space-y-0.5 min-w-0 flex-1">
+              {loc.hours.map((h, hi) => {
+                const isToday = hi === status.todayIndex
+                return (
+                  <div
+                    key={h.days}
+                    className={`flex gap-2 flex-wrap ${isToday ? 'text-white font-medium' : 'text-white/45'}`}
+                  >
+                    <span className="w-20 shrink-0">{isToday ? 'Today' : h.days}</span>
+                    <span className="whitespace-nowrap">{h.time}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 export default function OrderCTA() {
   const reduceMotion = useReducedMotion()
+  // Resolved once per mount on the client (Vite SPA, no SSR) so every card shares
+  // a single "now" reference for its open/closed status.
+  const now = new Date()
   const reveal = (y: number, delay: number, duration = 0.6) =>
     reduceMotion
       ? { initial: { opacity: 0 }, whileInView: { opacity: 1 }, transition: { duration: 0.25, ease: EASE } }
@@ -183,87 +396,16 @@ export default function OrderCTA() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={reduceMotion ? { duration: 0.25, ease: EASE } : { duration: 0.6, delay: 0.32, ease: EASE }}
-            className="mt-6 text-white/45 text-sm tracking-wide"
+            className="mt-6 text-white/55 text-base tracking-wide"
           >
-            Choose your location to start your order
+            Tap your closest location to start your order
           </motion.p>
         </div>
 
         {/* Location cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7">
           {locations.map((loc, i) => (
-            <motion.div
-              key={loc.name}
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 48 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.65, delay: reduceMotion ? 0 : 0.15 + i * 0.12, ease: EASE }}
-              whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.25, ease: EASE } }}
-              className="group bg-white/[0.03] border border-white/[0.07] rounded-lg overflow-hidden hover:border-tb-gold/40 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-black/40 transition-colors duration-300"
-            >
-              {/* Card image */}
-              <div className="relative overflow-hidden h-44">
-                <img
-                  src="https://static.spotapps.co/spots/7a/49cf33c8584852a63619508cf26a06/full"
-                  alt={`Thai Bistro ${loc.name} storefront`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-tb-dark/90 via-tb-dark/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
-                  <div>
-                    <p className="text-white font-bold text-lg font-display leading-tight">Thai Bistro</p>
-                    <p className="text-tb-gold font-semibold text-sm tracking-wide">{loc.name}</p>
-                  </div>
-                  <img src="/images/logo-square.png" alt="Thai Bistro logo" className="h-10 w-auto object-contain rounded" />
-                </div>
-              </div>
-
-              {/* Card body */}
-              <div className="p-5 space-y-3 sm:space-y-4">
-                <motion.a href={loc.mapsUrl} target="_blank" rel="noopener noreferrer"
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-start gap-2.5 -mx-2 px-2 py-1.5 rounded-md text-white/70 hover:text-tb-gold hover:bg-white/[0.03] transition-colors">
-                  <MapPinIcon />
-                  <div className="text-sm leading-relaxed">
-                    <div>{loc.address}</div>
-                    <div>{loc.city}</div>
-                  </div>
-                </motion.a>
-                <motion.a href={`tel:${loc.tel}`}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-center gap-2.5 -mx-2 px-2 py-2 rounded-md text-white/70 hover:text-tb-gold hover:bg-white/[0.03] transition-colors">
-                  <PhoneIcon />
-                  <span className="text-sm">{loc.phone}</span>
-                </motion.a>
-                <div className="flex items-start gap-2.5 text-white/70 px-0">
-                  <ClockIcon />
-                  <div className="text-sm space-y-1 min-w-0 flex-1">
-                    {loc.hours.map(h => (
-                      <div key={h.days} className="flex gap-2 flex-wrap">
-                        <span className="text-white/40 w-20 shrink-0">{h.days}</span>
-                        <span className="whitespace-nowrap">{h.time}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <motion.div
-                  className="h-px bg-gradient-to-r from-tb-gold/0 via-tb-gold/40 to-tb-gold/0"
-                  initial={reduceMotion ? { opacity: 0 } : { scaleX: 0 }}
-                  whileInView={reduceMotion ? { opacity: 1 } : { scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.9, delay: reduceMotion ? 0 : 0.3 + i * 0.12 }}
-                />
-                <div className="space-y-2">
-                  <motion.a href={loc.orderUrl} target="_blank" rel="noopener noreferrer"
-                    whileTap={{ scale: 0.97 }}
-                    className="flex w-full items-center justify-center gap-2.5 bg-tb-red hover:bg-tb-red-hover text-white text-base font-bold py-3.5 min-h-[52px] rounded-lg shadow-lg shadow-tb-red/20 transition-all hover:scale-[1.02]">
-                    <BagIcon />
-                    Order Online
-                  </motion.a>
-                  <p className="text-center text-xs text-white/45 tracking-wide">Pickup &amp; delivery available</p>
-                </div>
-              </div>
-            </motion.div>
+            <LocationCard key={loc.name} loc={loc} index={i} now={now} reduceMotion={reduceMotion} />
           ))}
         </div>
 
