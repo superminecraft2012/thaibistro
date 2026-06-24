@@ -77,22 +77,6 @@ export default function About() {
                 contemporary twist, carefully prepared using only the freshest ingredients.
               </p>
             </AnimateIn>
-
-            <AnimateIn direction="right" delay={0.38}>
-              <motion.a href="https://thaibistro.us" target="_blank" rel="noopener noreferrer"
-                whileTap={{ scale: 0.97 }}
-                className="group/link inline-flex items-center justify-center gap-2 border border-white/25 hover:border-tb-gold/60 text-white hover:text-tb-gold hover:bg-tb-gold/5 font-medium px-6 py-3.5 min-h-[48px] rounded transition-all text-sm tracking-wide">
-                Learn More About Us
-                <motion.svg
-                  className="w-4 h-4"
-                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                  whileHover={reduceMotion ? undefined : { x: 4 }}
-                  transition={{ type: 'spring', stiffness: 400 }}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </motion.svg>
-              </motion.a>
-            </AnimateIn>
           </div>
         </div>
       </div>
