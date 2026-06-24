@@ -20,9 +20,9 @@ export default function App() {
       />
       <Navbar />
       <Hero />
+      <OrderCTA />
       <About />
       <Gallery />
-      <OrderCTA />
       <Footer />
       <OrderBar />
     </div>
