@@ -193,11 +193,6 @@ export default function Hero() {
               </svg>
               <span className="relative">Order Online</span>
             </motion.a>
-            <a href="https://thaibistro.us/food-menu" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 border border-tb-gold/60 hover:border-tb-gold text-tb-gold hover:bg-tb-gold/10 font-semibold w-full sm:w-auto min-h-[64px] md:min-h-[48px] px-7 py-3.5 rounded-xl md:rounded transition-all hover:scale-105 active:scale-95 text-sm tracking-wide uppercase">
-              <LotusIcon className="w-5 h-5 md:hidden" />
-              View Our Menu
-            </a>
           </motion.div>
 
           {/* Mobile: trust / convenience feature row with vertical dividers */}
