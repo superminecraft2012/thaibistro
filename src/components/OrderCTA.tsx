@@ -216,17 +216,14 @@ function LocationCard({
       whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.25, ease: EASE } }}
       className="group flex flex-col bg-white/[0.03] border border-white/[0.07] rounded-xl overflow-hidden hover:border-tb-gold/40 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-black/40 transition-colors duration-300"
     >
-      {/* Card image with location name + live status badge */}
-      <div className="relative overflow-hidden h-40 sm:h-44">
-        <img
-          src="https://static.spotapps.co/spots/7a/49cf33c8584852a63619508cf26a06/full"
-          alt={`Thai Bistro ${loc.name} storefront`}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-tb-dark/95 via-tb-dark/30 to-transparent" />
+      {/* Centered location header - no photo, so the location name reads clearly */}
+      <div className="flex flex-col items-center text-center px-5 pt-7 pb-5">
+        <img src="/images/logo-square.png" alt="Thai Bistro logo" className="h-14 w-auto object-contain rounded mb-3" />
+        <p className="text-tb-gold/90 text-[0.7rem] font-medium tracking-[0.2em] uppercase mb-1">Thai Bistro</p>
+        <p className="text-white font-bold text-3xl font-display leading-tight">{loc.name}</p>
 
-        {/* Live open/closed badge - top-right, so each card reads differently at a glance */}
-        <div className={`absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-tb-dark/70 backdrop-blur-sm pl-2.5 pr-3 py-1 ring-1 ${s.ring}`}>
+        {/* Live open/closed status */}
+        <div className={`mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/[0.04] pl-2.5 pr-3 py-1 ring-1 ${s.ring}`}>
           <span className="relative flex h-2 w-2">
             {status.state === 'open' && !reduceMotion && (
               <span className={`absolute inline-flex h-full w-full rounded-full ${s.dot} opacity-60 animate-ping`} />
@@ -234,24 +231,12 @@ function LocationCard({
             <span className={`relative inline-flex h-2 w-2 rounded-full ${s.dot}`} />
           </span>
           <span className={`text-xs font-semibold ${s.text}`}>{status.label}</span>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
-          <div>
-            <p className="text-tb-gold/90 text-[0.7rem] font-medium tracking-[0.18em] uppercase">Thai Bistro</p>
-            <p className="text-white font-bold text-2xl font-display leading-tight">{loc.name}</p>
-          </div>
-          <img src="/images/logo-square.png" alt="Thai Bistro logo" className="h-10 w-auto object-contain rounded" />
+          {status.detail && <span className="text-xs text-white/45">· {status.detail}</span>}
         </div>
       </div>
 
       {/* Card body - the order action leads, details support */}
-      <div className="flex flex-col flex-1 p-5">
-        {/* Status detail line (e.g. "until 9 PM" / "opens 11 AM") */}
-        <p className="flex items-center gap-1.5 text-sm mb-3">
-          <span className={`font-semibold ${s.text}`}>{status.label}</span>
-          {status.detail && <span className="text-white/45">· {status.detail}</span>}
-        </p>
+      <div className="flex flex-col flex-1 px-5 pb-5">
 
         {/* PRIMARY ACTION - placed high in the card so the eye lands on it first */}
         <motion.a
@@ -408,21 +393,6 @@ export default function OrderCTA() {
             <LocationCard key={loc.name} loc={loc} index={i} now={now} reduceMotion={reduceMotion} />
           ))}
         </div>
-
-        <motion.div
-          {...reveal(16, 0.3)}
-          viewport={{ once: true, margin: '-60px' }}
-          className="text-center mt-10"
-        >
-          <motion.a href="https://thaibistro.us/locations" target="_blank" rel="noopener noreferrer"
-            whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center justify-center gap-2 px-4 py-3 min-h-[48px] text-tb-gold/80 hover:text-tb-gold text-sm font-medium transition-colors tracking-wide group">
-            View All Locations on Map
-            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </motion.a>
-        </motion.div>
       </div>
     </section>
   )
