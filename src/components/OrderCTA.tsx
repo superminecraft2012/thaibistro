@@ -170,14 +170,6 @@ function PhoneIcon() {
   )
 }
 
-function TruckIcon() {
-  return (
-    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-    </svg>
-  )
-}
-
 function ArrowIcon({ className = 'w-5 h-5 shrink-0' }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -338,13 +330,6 @@ export default function OrderCTA() {
           >
             Order Online
           </motion.p>
-          <motion.h2
-            {...reveal(32, 0.08, 0.65)}
-            viewport={{ once: true, margin: '-80px' }}
-            className="font-display text-3xl md:text-5xl font-bold text-white mb-5"
-          >
-            Skip the wait. <span className="text-tb-gold-light">Order ahead.</span>
-          </motion.h2>
 
           {/* Gold divider */}
           <motion.div
@@ -354,35 +339,6 @@ export default function OrderCTA() {
             viewport={{ once: true }}
             transition={reduceMotion ? { duration: 0.25, ease: EASE } : { duration: 0.9, delay: 0.18, ease: EASE }}
           />
-
-          <motion.div
-            {...reveal(20, 0.24)}
-            viewport={{ once: true, margin: '-80px' }}
-            className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-white/60 text-sm"
-          >
-            <span className="inline-flex items-center gap-2">
-              <BagIcon className="w-4 h-4 shrink-0 text-tb-gold" />
-              Pickup &amp; delivery
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <ClockIcon />
-              Ready in ~20 min
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <TruckIcon />
-              Delivered to your door
-            </span>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={reduceMotion ? { duration: 0.25, ease: EASE } : { duration: 0.6, delay: 0.32, ease: EASE }}
-            className="mt-6 text-white/55 text-base tracking-wide"
-          >
-            Tap your closest location to start your order
-          </motion.p>
         </div>
 
         {/* Location cards */}
