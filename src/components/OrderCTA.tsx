@@ -263,7 +263,7 @@ function LocationCard({
           className="group/btn flex w-full items-center justify-center gap-2.5 bg-tb-red hover:bg-tb-red-hover text-white text-base font-bold py-4 min-h-[56px] rounded-xl shadow-lg shadow-tb-red/25 transition-all hover:scale-[1.02]"
         >
           <BagIcon />
-          Order Now
+          Order {loc.name}
           <ArrowIcon className="w-4 h-4 shrink-0 transition-transform group-hover/btn:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover/btn:translate-x-0" />
         </motion.a>
         <p className="text-center text-xs text-white/45 tracking-wide mt-2 mb-4">Pickup &amp; delivery available</p>
