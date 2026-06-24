@@ -218,8 +218,6 @@ function LocationCard({
     >
       {/* Centered location header - no photo, so the location name reads clearly */}
       <div className="flex flex-col items-center text-center px-5 pt-7 pb-5">
-        <img src="/images/logo-square.png" alt="Thai Bistro logo" className="h-14 w-auto object-contain rounded mb-3" />
-        <p className="text-tb-gold/90 text-[0.7rem] font-medium tracking-[0.2em] uppercase mb-1">Thai Bistro</p>
         <p className="text-white font-bold text-3xl font-display leading-tight">{loc.name}</p>
 
         {/* Live open/closed status */}
