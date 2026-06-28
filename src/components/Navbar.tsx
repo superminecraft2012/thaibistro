@@ -148,6 +148,7 @@ export default function Navbar() {
         <a
           href="#order"
           aria-label="Order online - pick your location"
+          data-track="order_click"
           className="hidden md:inline-flex items-center gap-2 bg-tb-red hover:bg-tb-red-hover text-white text-sm font-semibold px-5 py-2.5 rounded-md transition-all hover:scale-105 active:scale-95 tracking-wide ring-1 ring-tb-gold/50 hover:ring-tb-gold shadow-lg shadow-tb-red/30 hover:shadow-tb-red/50"
         >
           <OrderBagIcon className="w-4 h-4" />
@@ -216,6 +217,7 @@ export default function Navbar() {
                   href="#order"
                   aria-label="Order online - pick your location"
                   onClick={() => setMenuOpen(false)}
+                  data-track="order_click"
                   className="flex w-full items-center justify-center gap-2 min-h-[44px] bg-tb-red hover:bg-tb-red-hover active:scale-[0.98] text-white text-base font-semibold px-5 py-3.5 rounded-md transition-all tracking-wide ring-1 ring-tb-gold/50 shadow-lg shadow-tb-red/30"
                 >
                   <OrderBagIcon className="w-5 h-5" />

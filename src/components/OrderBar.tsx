@@ -92,6 +92,7 @@ export default function OrderBar() {
             <a
               href="#order"
               aria-label="Order online"
+              data-track="order_click"
               className={
                 'flex w-full items-center justify-center gap-2.5 min-h-[3.5rem] bg-tb-red hover:bg-tb-red-hover text-white text-base font-bold rounded-2xl shadow-lg shadow-black/40 ring-1 ring-tb-gold/25 transition-colors active:scale-[0.98] tap-highlight-none' +
                 pulse
@@ -107,6 +108,7 @@ export default function OrderBar() {
             key="order-bar-desktop"
             href="#order"
             aria-label="Order online"
+            data-track="order_click"
             initial={enterDesktop.initial}
             animate={enterDesktop.animate}
             exit={enterDesktop.exit}

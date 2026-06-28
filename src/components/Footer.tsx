@@ -1,16 +1,16 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import GoldOrnament from './GoldOrnament'
 
-const quickLinks = [
+const quickLinks: { label: string; href: string; track?: string }[] = [
   { label: 'Home', href: '#home' },
-  { label: 'Order Online', href: '#order' },
+  { label: 'Order Online', href: '#order', track: 'order_click' },
   { label: 'Locations', href: '#order' },
 ]
 
-const contacts = [
-  { label: 'Shoreline', value: '(206) 533-6200', href: 'tel:+12065336200' },
-  { label: 'Federal Way', value: '(253) 874-8800', href: 'tel:+12538748800' },
-  { label: 'Mill Creek', value: '(425) 787-9707', href: 'tel:+14257879707' },
+const contacts: { label: string; value: string; href: string; track?: string }[] = [
+  { label: 'Shoreline', value: '(206) 533-6200', href: 'tel:+12065336200', track: 'call_click' },
+  { label: 'Federal Way', value: '(253) 874-8800', href: 'tel:+12538748800', track: 'call_click' },
+  { label: 'Mill Creek', value: '(425) 787-9707', href: 'tel:+14257879707', track: 'call_click' },
   { label: 'Email', value: 'nongart607@yahoo.com', href: 'mailto:nongart607@yahoo.com' },
 ]
 
@@ -88,6 +88,7 @@ export default function Footer() {
                     <a href={link.href}
                       target={link.href.startsWith('http') ? '_blank' : undefined}
                       rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      data-track={link.track}
                       className="inline-flex items-center min-h-[2.5rem] py-1.5 text-white/55 hover:text-tb-gold text-sm transition-colors tap-highlight-none">
                       {link.label}
                     </a>
@@ -103,7 +104,7 @@ export default function Footer() {
                 {contacts.map(c => (
                   <li key={c.label} className="flex flex-col">
                     <span className="text-white/30 text-xs uppercase tracking-wide">{c.label}</span>
-                    <a href={c.href} className="inline-flex items-center min-h-[2.25rem] text-white/65 hover:text-tb-gold text-sm transition-colors tap-highlight-none">{c.value}</a>
+                    <a href={c.href} data-track={c.track} className="inline-flex items-center min-h-[2.25rem] text-white/65 hover:text-tb-gold text-sm transition-colors tap-highlight-none">{c.value}</a>
                   </li>
                 ))}
               </ul>

@@ -234,6 +234,7 @@ function LocationCard({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Order online from Thai Bistro ${loc.name}`}
+          data-track="order_click"
           whileTap={{ scale: 0.97 }}
           className="group/btn flex w-full items-center justify-center gap-2.5 bg-tb-red hover:bg-tb-red-hover text-white text-base font-bold py-4 min-h-[56px] rounded-xl shadow-lg shadow-tb-red/25 transition-all hover:scale-[1.02]"
         >
@@ -259,6 +260,7 @@ function LocationCard({
           </motion.a>
           <motion.a
             href={`tel:${loc.tel}`}
+            data-track="call_click"
             whileTap={{ scale: 0.98 }}
             className="flex items-center gap-2.5 -mx-2 px-2 py-1.5 rounded-md text-white/65 hover:text-tb-gold hover:bg-white/[0.03] transition-colors"
           >
