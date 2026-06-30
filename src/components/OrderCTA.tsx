@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
+import ThaiMandala from './ThaiMandala'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -49,7 +50,7 @@ const locations: OrderLocation[] = [
       { days: 'Sunday', time: '12:00 PM – 9:00 PM' },
     ],
     schedule: STD,
-    orderUrl: 'https://thaibistro-shoreline.orderfood.express/',
+    orderUrl: 'https://order-shoreline.thaibistro.us',
     mapsUrl: 'https://maps.app.goo.gl/BV74aiAYR69br5i99',
   },
   {
@@ -206,10 +207,27 @@ function LocationCard({
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.65, delay: reduceMotion ? 0 : 0.15 + index * 0.12, ease: EASE }}
       whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.25, ease: EASE } }}
-      className="group flex flex-col bg-white/[0.03] border border-white/[0.07] rounded-xl overflow-hidden hover:border-tb-gold/40 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-black/40 transition-colors duration-300"
+      className="group relative flex flex-col bg-white/[0.03] border border-white/[0.07] rounded-xl overflow-hidden hover:border-tb-gold/40 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-black/40 transition-colors duration-300"
     >
-      {/* Centered location header - no photo, so the location name reads clearly */}
-      <div className="flex flex-col items-center text-center px-5 pt-7 pb-5">
+      {/* Gold gradient top accent bar */}
+      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-tb-gold/45 to-transparent group-hover:via-tb-gold/80 transition-all duration-500" />
+
+      {/* Interior top glow */}
+      <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-tb-gold/[0.05] to-transparent pointer-events-none" />
+
+      {/* Ghost location number */}
+      <div className="absolute top-3 right-4 font-display font-bold text-[4.5rem] leading-none text-tb-gold/[0.07] select-none pointer-events-none" aria-hidden="true">
+        {String(index + 1).padStart(2, '0')}
+      </div>
+
+      {/* Centered location header */}
+      <div className="flex flex-col items-center text-center px-5 pt-6 pb-5">
+        {/* Micro-ornament above name */}
+        <div className="flex items-center gap-2 mb-2.5">
+          <span className="h-px w-8 bg-gradient-to-r from-transparent to-tb-gold/50" />
+          <span className="w-1 h-1 rotate-45 bg-tb-gold/60 inline-block shrink-0" />
+          <span className="h-px w-8 bg-gradient-to-l from-transparent to-tb-gold/50" />
+        </div>
         <p className="text-white font-bold text-3xl font-display leading-tight">{loc.name}</p>
 
         {/* Live open/closed status */}
@@ -306,40 +324,71 @@ export default function OrderCTA() {
       className="relative bg-tb-dark py-24 md:py-32 overflow-hidden"
       style={{ scrollMarginTop: '5rem' }}
     >
-      {/* Diagonal texture + section glow to match the site language */}
-      <div className="absolute inset-0 diag-texture pointer-events-none" style={{ opacity: 0.03 }} />
+      {/* Diagonal texture + section glow */}
+      <div className="absolute inset-0 diag-texture pointer-events-none" style={{ opacity: 0.05 }} />
       <div className="absolute inset-0 section-glow pointer-events-none" />
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-tb-dark to-transparent pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-tb-dark to-transparent pointer-events-none" />
 
       {/* Soft gold glow behind the heading */}
       <div
-        className="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 w-[36rem] h-[36rem] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(212,168,67,0.10) 0%, transparent 65%)' }}
+        className="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(212,168,67,0.12) 0%, transparent 65%)' }}
       />
 
-      {/* Corner ornaments */}
-      <div className="absolute top-8 left-8 w-20 h-20 border-t-2 border-l-2 border-tb-gold/10 rounded-tl-lg pointer-events-none" />
-      <div className="absolute bottom-8 right-8 w-20 h-20 border-b-2 border-r-2 border-tb-gold/10 rounded-br-lg pointer-events-none" />
+      {/* Thai mandala watermark */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] text-tb-gold pointer-events-none" style={{ opacity: 0.07 }}>
+        <ThaiMandala className="w-full h-full" />
+      </div>
+
+      {/* Corner ornaments — double-bracket style */}
+      <div className="absolute top-8 left-8 w-24 h-24 pointer-events-none">
+        <div className="absolute inset-0 border-t-2 border-l-2 border-tb-gold/20 rounded-tl-lg" />
+        <div className="absolute inset-2 border-t border-l border-tb-gold/10 rounded-tl-md" />
+      </div>
+      <div className="absolute bottom-8 right-8 w-24 h-24 pointer-events-none">
+        <div className="absolute inset-0 border-b-2 border-r-2 border-tb-gold/20 rounded-br-lg" />
+        <div className="absolute inset-2 border-b border-r border-tb-gold/10 rounded-br-md" />
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Heading block */}
         <div className="text-center mb-12 md:mb-14">
-          <motion.p
+          <motion.div
             {...reveal(24, 0)}
             viewport={{ once: true, margin: '-80px' }}
-            className="text-tb-gold text-sm font-medium tracking-[0.25em] uppercase mb-3"
+            className="flex items-center justify-center gap-2 mb-4"
           >
-            Order Online
+            <span className="w-1 h-1 rotate-45 bg-tb-gold/45 inline-block shrink-0" />
+            <span className="w-1.5 h-1.5 rotate-45 bg-tb-gold/70 inline-block shrink-0" />
+            <p className="text-tb-gold text-sm font-medium tracking-[0.25em] uppercase">Order Online</p>
+            <span className="w-1.5 h-1.5 rotate-45 bg-tb-gold/70 inline-block shrink-0" />
+            <span className="w-1 h-1 rotate-45 bg-tb-gold/45 inline-block shrink-0" />
+          </motion.div>
+
+          <motion.h2
+            {...reveal(32, 0.1)}
+            viewport={{ once: true, margin: '-80px' }}
+            className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3"
+          >
+            Order from Your Nearest Location
+          </motion.h2>
+
+          <motion.p
+            {...reveal(16, 0.18)}
+            viewport={{ once: true, margin: '-80px' }}
+            className="text-white/45 text-sm md:text-base mb-6"
+          >
+            Fresh Thai cuisine ready for pickup or delivery
           </motion.p>
 
           {/* Gold divider */}
           <motion.div
-            className="mx-auto max-w-xs h-px bg-gradient-to-r from-tb-gold/0 via-tb-gold/60 to-tb-gold/0"
+            className="mx-auto max-w-sm h-px bg-gradient-to-r from-tb-gold/0 via-tb-gold/60 to-tb-gold/0"
             initial={reduceMotion ? { opacity: 0 } : { scaleX: 0, opacity: 0 }}
             whileInView={reduceMotion ? { opacity: 1 } : { scaleX: 1, opacity: 1 }}
             viewport={{ once: true }}
-            transition={reduceMotion ? { duration: 0.25, ease: EASE } : { duration: 0.9, delay: 0.18, ease: EASE }}
+            transition={reduceMotion ? { duration: 0.25, ease: EASE } : { duration: 0.9, delay: 0.24, ease: EASE }}
           />
         </div>
 
